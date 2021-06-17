@@ -15,24 +15,21 @@ func helper(Text string) string {
 	case "roll":
 		return "roll is usually run with three params\n first amount of dice\n second - difficulty \n y/n for explosion"
 	case "exit":
-		return "type fo end conversation"
+		return "type to of the bot(for dev)"
 	default:
 		return "I understand /roll and /exit.For commands info type /help with roll or exit"
 	}
 
 }
 
-// 0 transforms to 10 because
-func dicerand(Text string) string {
-	var ret = strings.Split(Text, " ")
+func roller(amount int, diff int, expl string) string {
+
 	var res string
 	rand.Seed(time.Now().UnixNano())
-	var amount, _ = strconv.Atoi(ret[0])
-	var diff, _ = strconv.Atoi(ret[1])
 	var iter int = 0
 	var ran int
-	res = "Amount = " + ret[0] + "\n" + "diff " + ret[1]
-	res = res + "\n" + "expl = " + ret[2] + "\n" + "numbers:"
+	res = "Amount = " + strconv.Itoa(amount) + "\n" + "diff " + strconv.Itoa(diff)
+	res = res + "\n" + "expl = " + expl + "\n" + "numbers:"
 	for i := 0; i < amount; i++ {
 		ran = rand.Intn(10)
 		if ran == 0 {
@@ -41,9 +38,12 @@ func dicerand(Text string) string {
 		res = res + " " + strconv.Itoa(ran)
 		if ran >= diff {
 			iter++
-			if (ran == 10) && (ret[2] == "y") {
+			if (ran == 10) && (expl == "y") {
 				ran = rand.Intn(11)
-				res = res + " " + strconv.Itoa(ran)
+				if ran == 0 {
+					ran = 10
+				}
+				res = res + " (exploded)" + strconv.Itoa(ran)
 				if ran >= diff {
 					iter++
 				}
@@ -55,6 +55,25 @@ func dicerand(Text string) string {
 	}
 	res = res + "\n result:" + strconv.Itoa(iter)
 	return res
+}
+
+func find_sql(Name string) int {
+	return -1
+}
+
+// 0 transforms to 10 because when you roll standard d10 you in contains 0...9 and you count 0 as 10
+func dicerand(Text string) string {
+	var ret = strings.Split(Text, " ")
+	var res string
+	if find_sql(ret[0]) == -1 {
+
+		var param [2]int
+		param[0], _ = strconv.Atoi(ret[0])
+		param[1], _ = strconv.Atoi(ret[1])
+		return res + roller(param[0], param[1], ret[2])
+	}
+	return "Error"
+
 }
 
 func main() {
@@ -88,7 +107,9 @@ func main() {
 				msg.Text = dicerand(update.Message.CommandArguments())
 			case "exit":
 				msg.Text = "Good Night " + update.Message.Chat.UserName
-				x = 1
+				if update.Message.Chat.UserName == "HedonisticAI" {
+					x = 1
+				}
 			default:
 				msg.Text = "I don't know that command type /help for info"
 			}
