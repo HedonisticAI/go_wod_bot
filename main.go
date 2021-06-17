@@ -53,6 +53,9 @@ func roller(amount int, diff int, expl string) string {
 				if ran >= diff {
 					iter++
 				}
+				if ran == 1 {
+					iter--
+				}
 			}
 		}
 		if ran == 1 {
