@@ -70,6 +70,9 @@ func dicerand(Text string) string {
 		var param [2]int
 		param[0], _ = strconv.Atoi(ret[0])
 		param[1], _ = strconv.Atoi(ret[1])
+		if param[0] <= 0 || param[1] <= 0 || (ret[2] != "y" && ret[2] != "n") {
+			return "Bad params"
+		}
 		return res + roller(param[0], param[1], ret[2])
 	}
 	return "Error"
