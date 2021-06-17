@@ -1,14 +1,20 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 )
+
+type Config struct {
+	TelegramBotToken string
+}
 
 func helper(Text string) string {
 	switch Text {
@@ -57,31 +63,33 @@ func roller(amount int, diff int, expl string) string {
 	return res
 }
 
-func find_sql(Name string) int {
-	return -1
-}
-
 // 0 transforms to 10 because when you roll standard d10 you in contains 0...9 and you count 0 as 10
-func dicerand(Text string) string {
+func standard_roll(Text string) string {
+	if Text == "" {
+		return "No params"
+	}
 	var ret = strings.Split(Text, " ")
 	var res string
-	if find_sql(ret[0]) == -1 {
-
-		var param [2]int
-		param[0], _ = strconv.Atoi(ret[0])
-		param[1], _ = strconv.Atoi(ret[1])
-		if param[0] <= 0 || param[1] <= 0 || (ret[2] != "y" && ret[2] != "n") {
-			return "Bad params"
-		}
-		return res + roller(param[0], param[1], ret[2])
+	var param [2]int
+	param[0], _ = strconv.Atoi(ret[0])
+	param[1], _ = strconv.Atoi(ret[1])
+	if param[0] <= 0 || param[1] <= 0 || (ret[2] != "y" && ret[2] != "n") {
+		return "Bad params"
 	}
-	return "Error"
+	return res + roller(param[0], param[1], ret[2])
 
 }
 
 func main() {
+	file, _ := os.Open("cfg.json")
+	decoder := json.NewDecoder(file)
+	configuration := Config{}
+	err := decoder.Decode(&configuration)
+	if err != nil {
+		log.Panic(err)
+	}
 	// подключаемся к боту с помощью токена
-	bot, err := tgbotapi.NewBotAPI("1840560184:AAHjCrmX8sPW-yj9mld5Qze8Mqtkn1mWdIE")
+	bot, err := tgbotapi.NewBotAPI(configuration.TelegramBotToken)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -107,7 +115,7 @@ func main() {
 			case "help":
 				msg.Text = helper(update.Message.CommandArguments())
 			case "roll":
-				msg.Text = dicerand(update.Message.CommandArguments())
+				msg.Text = standard_roll(update.Message.CommandArguments())
 			case "exit":
 				msg.Text = "Good Night " + update.Message.Chat.UserName
 				if update.Message.Chat.UserName == "HedonisticAI" {
