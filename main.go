@@ -66,10 +66,10 @@ func main() {
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 	var x int8 = 0
 	// инициализируем канал, куда будут прилетать обновления от API
-	//var ucfg tgbotapi.UpdateConfig = tgbotapi.NewUpdate(0)
-	//ucfg.Timeout = 60
-	//upd, _ := bot.GetUpdatesChan(ucfg)
-	upd := bot.ListenForWebhook("/" + bot.Token)
+	var ucfg tgbotapi.UpdateConfig = tgbotapi.NewUpdate(0)
+	ucfg.Timeout = 60
+	upd, _ := bot.GetUpdatesChan(ucfg)
+	//upd := bot.ListenForWebhook("/" + bot.Token)
 	http.HandleFunc("/", MainHandler)
 	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	// читаем обновления из канала
