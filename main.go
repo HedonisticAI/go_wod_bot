@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -43,6 +44,10 @@ func standard_roll(Text string) string {
 
 }
 
+func MainHandler(resp http.ResponseWriter, _ *http.Request) {
+	resp.Write([]byte("Hi, i am roller and assistant"))
+}
+
 func main() {
 	file, _ := os.Open("cfg.json")
 	decoder := json.NewDecoder(file)
@@ -64,6 +69,8 @@ func main() {
 	var ucfg tgbotapi.UpdateConfig = tgbotapi.NewUpdate(0)
 	ucfg.Timeout = 60
 	upd, _ := bot.GetUpdatesChan(ucfg)
+	http.HandleFunc("/", MainHandler)
+	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	// читаем обновления из канала
 	for x != 1 {
 		x = 0
