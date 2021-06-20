@@ -19,10 +19,10 @@ func helper(Text string) string {
 	switch Text {
 	case "roll":
 		return "roll is usually run with three params\n first amount of dice\n second - difficulty \n y/n for explosion"
-	case "exit":
-		return "type to of the bot(for dev)"
+	case "bye":
+		return "Bot will say good night"
 	default:
-		return "I understand /roll and /exit.For commands info type /help with roll or exit"
+		return "I understand /roll and /bye.For commands info type /help with roll or exit"
 	}
 
 }
@@ -33,6 +33,9 @@ func standard_roll(Text string) string {
 		return "No params"
 	}
 	var ret = strings.Split(Text, " ")
+	if len(ret) != 3 {
+		return "Bad params"
+	}
 	var res string
 	var param [2]int
 	param[0], _ = strconv.Atoi(ret[0])
@@ -82,12 +85,8 @@ func main() {
 			msg.Text = "default"
 			if update.Message.IsCommand() {
 				msg.Text = commandhandler(update)
-				if update.Message.Command() == "exit" {
-					x = 1
-				}
 				msg.ReplyToMessageID = update.Message.MessageID
 			}
-
 			bot.Send(msg)
 		default:
 			continue

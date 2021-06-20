@@ -64,7 +64,7 @@ func commandhandler(update tgbotapi.Update) string {
 		return helper(update.Message.CommandArguments())
 	case "roll":
 		return standard_roll(update.Message.CommandArguments())
-	case "exit":
+	case "bye":
 		return "Good Night " + update.Message.Chat.UserName
 	}
 	return "Unknown Command"
