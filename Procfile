@@ -1,1 +1,1 @@
-worker: go run main.go utility.go
+worker: go run bin/main.go bin/utility.go
