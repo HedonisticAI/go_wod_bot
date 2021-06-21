@@ -36,17 +36,19 @@ func roller(amount int, diff int, expl string) string {
 		res = res + " " + strconv.Itoa(ran)
 		if ran >= diff {
 			iter++
-			if (ran == 10) && (expl == "y") {
-				ran = rand.Intn(11)
-				if ran == 0 {
-					ran = 10
-				}
-				res = res + " (exploded)" + strconv.Itoa(ran)
-				if ran >= diff {
-					iter++
-				}
-				if ran == 1 {
-					iter--
+			if expl == "y" && ran == 10 {
+				for ran == 10 {
+					ran = rand.Intn(11)
+					if ran == 0 {
+						ran = 10
+					}
+					res = res + " (exploded)" + strconv.Itoa(ran)
+					if ran >= diff {
+						iter++
+					}
+					if ran == 1 {
+						iter--
+					}
 				}
 			}
 		}
