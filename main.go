@@ -72,7 +72,7 @@ func main() {
 	//var ucfg tgbotapi.UpdateConfig = tgbotapi.NewUpdate(0)
 	//ucfg.Timeout = 60
 	//upd, _ := bot.GetUpdatesChan(ucfg)
-	upd := bot.ListenForWebhook("/" + bot.Token)
+	upd := bot.ListenForWebhook("/" + configuration.TelegramBotToken)
 	http.HandleFunc("/", MainHandler)
 	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	// читаем обновления из канала
